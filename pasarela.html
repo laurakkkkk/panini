@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pasarela de Pago - Panini</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --panini-blue: #0052a3;
+            --panini-red: #d32f2f;
+            --panini-yellow: #ffd700;
+            --text-dark: #1a1a1a;
+            --text-light: #666;
+            --border-light: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* HEADER */
+        .promo-banner {
+            background: var(--panini-red);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        header {
+            background: var(--panini-blue);
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            position: absolute;
+            left: 10px;
+        }
+
+        .menu-btn, .search-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+        }
+
+        .menu-btn svg, .search-btn svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .logo {
+            height: 28px;
+            object-fit: contain;
+            margin-left: 15px;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 10px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+        }
+
+        .back-btn svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        /* CONTENIDO */
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--panini-blue);
+        }
+
+        /* RESUMEN CARRITO */
+        .cart-summary {
+            background: white;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .cart-item-image {
+            width: 70px;
+            height: 70px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .cart-item-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .cart-item-quantity {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--panini-red);
+            margin-bottom: 8px;
+        }
+
+        .cart-item-checkbox {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--panini-blue);
+        }
+
+        .cart-item-remove {
+            background: none;
+            border: none;
+            color: var(--panini-red);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 0;
+        }
+
+        .cart-item-remove:hover {
+            text-decoration: underline;
+        }
+
+        /* RESUMEN TOTALES */
+        .totals {
+            background: white;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .total-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .total-row.final {
+            font-size: 16px;
+            font-weight: 600;
+            border-bottom: none;
+            color: var(--panini-red);
+        }
+
+        /* METODOS DE PAGO */
+        .payment-methods {
+            background: white;
+            border-radius: 4px;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .payment-section-title {
+            font-size: 13px;
+            font-weight: 500;
+            padding: 15px;
+            background: #f5f5f5;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .payment-option:last-child {
+            border-bottom: none;
+        }
+
+        .payment-option:hover {
+            background: #f9f9f9;
+        }
+
+        .payment-icon {
+            width: 44px;
+            height: 44px;
+            margin-right: 15px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: white;
+        }
+
+        .payment-icon img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            width: 40px;
+            height: 40px;
+        }
+
+        .payment-label {
+            flex: 1;
+        }
+
+        .payment-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .payment-description {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* BOTÓN DE PAGO */
+        .pay-button {
+            width: 100%;
+            background: var(--panini-blue);
+            color: white;
+            border: none;
+            padding: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .pay-button:hover:not(:disabled) {
+            background: #003d7a;
+        }
+
+        .pay-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* VOLVER */
+        .back-link {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .back-link a {
+            color: var(--panini-blue);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--panini-blue);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 11px;
+        }
+
+        footer a {
+            color: var(--panini-yellow);
+            text-decoration: none;
+        }
+
+        .empty-cart {
+            background: white;
+            border-radius: 4px;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .empty-cart p {
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        .empty-cart a {
+            display: inline-block;
+            background: var(--panini-blue);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- BANNER PROMOCIONAL -->
+    <div class="promo-banner">
+        <svg style="width: 18px; height: 18px;" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18 6h-2.18c.11-.32.18-.67.18-1a2.996 2.996 0 0 0-5.5-1h-1c-1.1 0-2 .9-2 2 0 .33.07.68.18 1H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1z"/>
+        </svg>
+        Envío GRATIS en compras superiores a $100.000
+    </div>
+
+    <!-- HEADER -->
+    <header>
+        <button class="back-btn" onclick="goBack()">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+        </button>
+        
+        <img src="pani.webp" alt="Panini Logo" class="logo">
+    </header>
+
+    <!-- CONTENIDO -->
+    <div class="container" id="content">
+        <!-- Se cargará dinámicamente -->
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2024 Panini Trading Cards | <a href="#">paninilatina.com</a></p>
+        <p style="margin-top: 10px;">Síguenos en redes sociales</p>
+    </footer>
+
+    <script>
+        // Recuperar carrito del localStorage
+        let cartItems = [];
+
+        function loadCart() {
+            // Por ahora usamos datos de ejemplo, pero en producción vendrían del sessionStorage/localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromProduct = urlParams.get('from');
+            
+            // Si viene de una página de producto, no hay items aún (el carrito se cierra sin guardar)
+            // Mostrar carrito vacío o items de ejemplo
+            displayCart();
+        }
+
+        function displayCart() {
+            const content = document.getElementById('content');
+            
+            // Obtener items del localStorage si existen
+            let items = [];
+            const savedCart = localStorage.getItem('paniniCart');
+            if (savedCart) {
+                items = JSON.parse(savedCart);
+            }
+
+            if (items.length === 0) {
+                content.innerHTML = `
+                    <div class="empty-cart">
+                        <p>Tu carrito está vacío</p>
+                        <a href="index.html">Volver a la tienda</a>
+                    </div>
+                `;
+                return;
+            }
+
+            let cartHTML = '<h2 class="section-title">RESUMEN DE COMPRA</h2><div class="cart-summary">';
+            let total = 0;
+
+            items.forEach((item, index) => {
+                const subtotal = item.price * item.quantity;
+                total += subtotal;
+                cartHTML += `
+                    <div class="cart-item" id="item-${index}">
+                        <input type="checkbox" class="cart-item-checkbox" data-index="${index}" onchange="updateTotal()" checked>
+                        <div class="cart-item-image">
+                            <img src="${item.image}" alt="${item.name}">
+                        </div>
+                        <div class="cart-item-info">
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-quantity">Cantidad: ${item.quantity}</div>
+                            <div class="cart-item-price">$${subtotal.toLocaleString('es-CO')}</div>
+                            <button class="cart-item-remove" onclick="removeItem(${index})">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartHTML += '</div>';
+
+            // Totales
+            cartHTML += `
+                <div class="totals">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span>$${total.toLocaleString('es-CO')}</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Envío:</span>
+                        <span>Gratis</span>
+                    </div>
+                    <div class="total-row final">
+                        <span>Total:</span>
+                        <span>$${total.toLocaleString('es-CO')}</span>
+                    </div>
+                </div>
+            `;
+
+            // Métodos de pago
+            cartHTML += `
+                <h2 class="section-title">¿CÓMO QUIERES PAGAR?</h2>
+                <div class="payment-methods">
+                    <div class="payment-section-title">Sin cuenta de Mercado Pago</div>
+                    
+                    <div class="payment-option" onclick="continuePay('tarjeta')">
+                        <div class="payment-icon">
+                            <img src="tarjeta.png" alt="Tarjeta">
+                        </div>
+                        <div class="payment-label">
+                            <div class="payment-title">Tarjeta</div>
+                            <div class="payment-description">Crédito, débito o prepaga</div>
+                        </div>
+                    </div>
+
+                    <div class="payment-option" onclick="continuePay('pse')">
+                        <div class="payment-icon">
+                            <img src="pse.png" alt="PSE">
+                        </div>
+                        <div class="payment-label">
+                            <div class="payment-title">PSE</div>
+                            <div class="payment-description">El pago se acreditará al instante.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="back-link">
+                    <a href="panini-store.html">← Volver a la tienda</a>
+                </div>
+            `;
+
+            content.innerHTML = cartHTML;
+        }
+
+        function removeItem(index) {
+            let items = [];
+            const savedCart = localStorage.getItem('paniniCart');
+            if (savedCart) {
+                items = JSON.parse(savedCart);
+                items.splice(index, 1);
+                localStorage.setItem('paniniCart', JSON.stringify(items));
+                displayCart();
+            }
+        }
+
+        function updateTotal() {
+            let items = [];
+            const savedCart = localStorage.getItem('paniniCart');
+            if (savedCart) {
+                items = JSON.parse(savedCart);
+            }
+
+            let selectedTotal = 0;
+            const checkboxes = document.querySelectorAll('.cart-item-checkbox');
+            
+            checkboxes.forEach((checkbox, index) => {
+                if (checkbox.checked && items[index]) {
+                    const subtotal = items[index].price * items[index].quantity;
+                    selectedTotal += subtotal;
+                }
+            });
+
+            // Actualizar el total mostrado
+            const totalElement = document.querySelector('.total-row.final span:last-child');
+            if (totalElement) {
+                totalElement.textContent = '$' + selectedTotal.toLocaleString('es-CO');
+            }
+
+            // Actualizar el botón de pago
+            const payButton = document.querySelector('.checkout-btn');
+            if (payButton) {
+                payButton.textContent = `PAGAR AHORA • $${selectedTotal.toLocaleString('es-CO')}`;
+            }
+        }
+
+        function selectPayment(method) {
+            // Actualizar opciones visualmente
+            const options = document.querySelectorAll('.payment-option');
+            options.forEach(opt => {
+                opt.classList.remove('active');
+                opt.querySelector('input').checked = false;
+            });
+            
+            // Marcar la opción seleccionada
+            event.currentTarget.classList.add('active');
+            event.currentTarget.querySelector('input').checked = true;
+        }
+
+        function continuePay(method) {
+            if (method === 'tarjeta') {
+                window.location.href = 'tarjeta.html';
+            } else if (method === 'pse') {
+                window.location.href = 'pasarela/pse.html';
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        // Cargar carrito al iniciar
+        loadCart();
+    </script>
+</body>
+</html>

