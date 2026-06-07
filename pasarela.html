@@ -185,14 +185,6 @@
             margin-bottom: 8px;
         }
 
-        .cart-item-checkbox {
-            margin-right: 10px;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--panini-blue);
-        }
-
         .cart-item-remove {
             background: none;
             border: none;
@@ -269,6 +261,11 @@
 
         .payment-option:hover {
             background: #f9f9f9;
+        }
+
+        .payment-option.active {
+            background: #f0f7ff;
+            border-left: 4px solid var(--panini-blue);
         }
 
         .payment-icon {
@@ -384,6 +381,27 @@
             text-decoration: none;
             font-weight: 500;
         }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid var(--panini-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -408,7 +426,10 @@
 
     <!-- CONTENIDO -->
     <div class="container" id="content">
-        <!-- Se cargará dinámicamente -->
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Cargando carrito...</p>
+        </div>
     </div>
 
     <!-- FOOTER -->
@@ -418,30 +439,16 @@
     </footer>
 
     <script>
-        // Recuperar carrito del localStorage
         let cartItems = [];
+        let selectedPaymentMethod = 'tarjeta';
 
         function loadCart() {
-            // Por ahora usamos datos de ejemplo, pero en producción vendrían del sessionStorage/localStorage
-            const urlParams = new URLSearchParams(window.location.search);
-            const fromProduct = urlParams.get('from');
-            
-            // Si viene de una página de producto, no hay items aún (el carrito se cierra sin guardar)
-            // Mostrar carrito vacío o items de ejemplo
-            displayCart();
-        }
-
-        function displayCart() {
             const content = document.getElementById('content');
             
-            // Obtener items del localStorage si existen
-            let items = [];
-            const savedCart = localStorage.getItem('paniniCart');
-            if (savedCart) {
-                items = JSON.parse(savedCart);
-            }
-
-            if (items.length === 0) {
+            // Obtener items del localStorage - IMPORTANTE: usar la misma clave que guarda el producto
+            const savedCart = localStorage.getItem('cartItems');
+            
+            if (!savedCart || savedCart === '[]') {
                 content.innerHTML = `
                     <div class="empty-cart">
                         <p>Tu carrito está vacío</p>
@@ -451,15 +458,32 @@
                 return;
             }
 
+            try {
+                cartItems = JSON.parse(savedCart);
+            } catch (e) {
+                console.error('Error al parsear carrito:', e);
+                content.innerHTML = `
+                    <div class="empty-cart">
+                        <p>Error al cargar el carrito</p>
+                        <a href="index.html">Volver a la tienda</a>
+                    </div>
+                `;
+                return;
+            }
+
+            displayCart();
+        }
+
+        function displayCart() {
+            const content = document.getElementById('content');
             let cartHTML = '<h2 class="section-title">RESUMEN DE COMPRA</h2><div class="cart-summary">';
             let total = 0;
 
-            items.forEach((item, index) => {
+            cartItems.forEach((item, index) => {
                 const subtotal = item.price * item.quantity;
                 total += subtotal;
                 cartHTML += `
                     <div class="cart-item" id="item-${index}">
-                        <input type="checkbox" class="cart-item-checkbox" data-index="${index}" onchange="updateTotal()" checked>
                         <div class="cart-item-image">
                             <img src="${item.image}" alt="${item.name}">
                         </div>
@@ -476,6 +500,9 @@
             cartHTML += '</div>';
 
             // Totales
+            const envio = total >= 100000 ? 0 : 5000;
+            const totalFinal = total + envio;
+
             cartHTML += `
                 <div class="totals">
                     <div class="total-row">
@@ -484,11 +511,11 @@
                     </div>
                     <div class="total-row">
                         <span>Envío:</span>
-                        <span>Gratis</span>
+                        <span>${envio === 0 ? 'GRATIS' : '$' + envio.toLocaleString('es-CO')}</span>
                     </div>
                     <div class="total-row final">
                         <span>Total:</span>
-                        <span>$${total.toLocaleString('es-CO')}</span>
+                        <span id="totalAmount">$${totalFinal.toLocaleString('es-CO')}</span>
                     </div>
                 </div>
             `;
@@ -497,11 +524,11 @@
             cartHTML += `
                 <h2 class="section-title">¿CÓMO QUIERES PAGAR?</h2>
                 <div class="payment-methods">
-                    <div class="payment-section-title">Sin cuenta de Mercado Pago</div>
+                    <div class="payment-section-title">Métodos disponibles</div>
                     
-                    <div class="payment-option" onclick="continuePay('tarjeta')">
+                    <div class="payment-option active" onclick="selectPayment(this, 'tarjeta')">
                         <div class="payment-icon">
-                            <img src="tarjeta.png" alt="Tarjeta">
+                            <img src="tarjeta.png" alt="Tarjeta" style="width: 30px; height: 30px;">
                         </div>
                         <div class="payment-label">
                             <div class="payment-title">Tarjeta</div>
@@ -509,9 +536,9 @@
                         </div>
                     </div>
 
-                    <div class="payment-option" onclick="continuePay('pse')">
+                    <div class="payment-option" onclick="selectPayment(this, 'pse')">
                         <div class="payment-icon">
-                            <img src="pse.png" alt="PSE">
+                            <img src="pse.png" alt="PSE" style="width: 30px; height: 30px;">
                         </div>
                         <div class="payment-label">
                             <div class="payment-title">PSE</div>
@@ -520,8 +547,10 @@
                     </div>
                 </div>
 
+                <button class="pay-button" onclick="continuePay()">PAGAR AHORA • $${totalFinal.toLocaleString('es-CO')}</button>
+
                 <div class="back-link">
-                    <a href="panini-store.html">← Volver a la tienda</a>
+                    <a href="javascript:history.back()">← Volver</a>
                 </div>
             `;
 
@@ -529,64 +558,44 @@
         }
 
         function removeItem(index) {
-            let items = [];
-            const savedCart = localStorage.getItem('paniniCart');
-            if (savedCart) {
-                items = JSON.parse(savedCart);
-                items.splice(index, 1);
-                localStorage.setItem('paniniCart', JSON.stringify(items));
+            cartItems.splice(index, 1);
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            
+            if (cartItems.length === 0) {
+                loadCart();
+            } else {
                 displayCart();
             }
         }
 
-        function updateTotal() {
-            let items = [];
-            const savedCart = localStorage.getItem('paniniCart');
-            if (savedCart) {
-                items = JSON.parse(savedCart);
-            }
-
-            let selectedTotal = 0;
-            const checkboxes = document.querySelectorAll('.cart-item-checkbox');
-            
-            checkboxes.forEach((checkbox, index) => {
-                if (checkbox.checked && items[index]) {
-                    const subtotal = items[index].price * items[index].quantity;
-                    selectedTotal += subtotal;
-                }
-            });
-
-            // Actualizar el total mostrado
-            const totalElement = document.querySelector('.total-row.final span:last-child');
-            if (totalElement) {
-                totalElement.textContent = '$' + selectedTotal.toLocaleString('es-CO');
-            }
-
-            // Actualizar el botón de pago
-            const payButton = document.querySelector('.checkout-btn');
-            if (payButton) {
-                payButton.textContent = `PAGAR AHORA • $${selectedTotal.toLocaleString('es-CO')}`;
-            }
-        }
-
-        function selectPayment(method) {
-            // Actualizar opciones visualmente
-            const options = document.querySelectorAll('.payment-option');
-            options.forEach(opt => {
+        function selectPayment(element, method) {
+            // Remover clase active de todos
+            document.querySelectorAll('.payment-option').forEach(opt => {
                 opt.classList.remove('active');
-                opt.querySelector('input').checked = false;
             });
             
-            // Marcar la opción seleccionada
-            event.currentTarget.classList.add('active');
-            event.currentTarget.querySelector('input').checked = true;
+            // Agregar clase active al seleccionado
+            element.classList.add('active');
+            selectedPaymentMethod = method;
         }
 
-        function continuePay(method) {
-            if (method === 'tarjeta') {
-                window.location.href = 'tarjetas.html';
-            } else if (method === 'pse') {
-                window.location.href = 'pasarela/pse.html';
+        function continuePay() {
+            if (selectedPaymentMethod === 'tarjeta') {
+                // Guardar el total a pagar
+                const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const envio = total >= 100000 ? 0 : 5000;
+                const totalFinal = total + envio;
+                
+                localStorage.setItem('totalToPay', totalFinal.toString());
+                window.location.href = 'pago-tarjeta.html';
+            } else if (selectedPaymentMethod === 'pse') {
+                // Guardar el total a pagar
+                const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const envio = total >= 100000 ? 0 : 5000;
+                const totalFinal = total + envio;
+                
+                localStorage.setItem('totalToPay', totalFinal.toString());
+                window.location.href = 'pago-pse.html';
             }
         }
 
@@ -595,7 +604,7 @@
         }
 
         // Cargar carrito al iniciar
-        loadCart();
+        window.addEventListener('DOMContentLoaded', loadCart);
     </script>
 </body>
 </html>
