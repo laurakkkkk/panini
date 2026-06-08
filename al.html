@@ -165,40 +165,67 @@
     <script>
         let cartItems = [];
         const productPrice = 15000;
+        const productName = 'Album común COPA MUNDIAL DE LA FIFA 2026™';
+        const productImage = 'lapi.png';
 
         function increaseQuantity() { const input = document.getElementById('quantity'); input.value = parseInt(input.value) + 1; }
         function decreaseQuantity() { const input = document.getElementById('quantity'); if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1; }
 
         function addToCart() {
             const qty = parseInt(document.getElementById('quantity').value);
-            cartItems = [{name: 'Album común COPA MUNDIAL DE LA FIFA 2026™', price: productPrice, quantity: qty, image: 'lapi.png'}];
+            const newItem = {name: productName, price: productPrice, quantity: qty, image: productImage};
+            
+            const savedCart = localStorage.getItem('cartItems');
+            if (savedCart) {
+                cartItems = JSON.parse(savedCart);
+                const existingItem = cartItems.find(item => item.name === newItem.name);
+                if (existingItem) {
+                    existingItem.quantity += qty;
+                } else {
+                    cartItems.push(newItem);
+                }
+            } else {
+                cartItems = [newItem];
+            }
+            
             localStorage.setItem('cartItems', JSON.stringify(cartItems));
             updateCart();
             toggleCart();
         }
 
         function updateCart() {
-            const cartItemsDiv = document.getElementById('cartItems'), cartTotal = document.getElementById('cartTotal'), cartCount = document.querySelector('.cart-count');
+            const savedCart = localStorage.getItem('cartItems');
+            if (savedCart) {
+                cartItems = JSON.parse(savedCart);
+            }
+            
+            const cartItemsDiv = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            const cartCount = document.querySelector('.cart-count');
+            
             cartItemsDiv.innerHTML = '';
             let total = 0, totalItems = 0;
+            
             cartItems.forEach((item, index) => {
                 const subtotal = item.price * item.quantity;
                 total += subtotal;
                 totalItems += item.quantity;
-                const itemHTML = `<div class="cart-item"><div class="cart-item-image"><img src="${item.image}" alt="${item.name}"></div><div class="cart-item-info"><div class="cart-item-title">${item.name}</div><div class="cart-item-price">$${item.price.toLocaleString('es-CO')}</div><div class="cart-item-quantity"><button onclick="decreaseCartItem(${index})">−</button><input type="number" value="${item.quantity}" min="1" readonly><button onclick="increaseCartItem(${index})">+</button></div></div></div>`;
+                const itemHTML = `<div class="cart-item"><div class="cart-item-image"><img src="${item.image}" alt="${item.name}"></div><div class="cart-item-info"><div class="cart-item-title">${item.name}</div><div class="cart-item-price">${item.price.toLocaleString('es-CO')}</div><div class="cart-item-quantity"><button onclick="decreaseCartItem(${index})">−</button><input type="number" value="${item.quantity}" min="1" readonly><button onclick="increaseCartItem(${index})">+</button></div></div></div>`;
                 cartItemsDiv.innerHTML += itemHTML;
             });
+            
             cartTotal.textContent = '$' + total.toLocaleString('es-CO');
             cartCount.textContent = totalItems;
             document.querySelector('.cart-header span').textContent = totalItems + (totalItems === 1 ? ' ARTICULO' : ' ARTICULOS');
-            document.querySelector('.checkout-btn').textContent = `IR A PAGAR • $${total.toLocaleString('es-CO')}`;
+            document.querySelector('.checkout-btn').textContent = `IR A PAGAR • ${total.toLocaleString('es-CO')}`;
         }
 
         function increaseCartItem(index) { cartItems[index].quantity++; localStorage.setItem('cartItems', JSON.stringify(cartItems)); updateCart(); }
-        function decreaseCartItem(index) { if (cartItems[index].quantity > 1) { cartItems[index].quantity--; localStorage.setItem('cartItems', JSON.stringify(cartItems)); updateCart(); } }
+        function decreaseCartItem(index) { if (cartItems[index].quantity > 1) { cartItems[index].quantity--; localStorage.setItem('cartItems', JSON.stringify(cartItems)); updateCart(); } else { cartItems.splice(index, 1); localStorage.setItem('cartItems', JSON.stringify(cartItems)); updateCart(); } }
         function toggleCart() { document.getElementById('cartModal').classList.toggle('active'); }
         function goToCheckout() { localStorage.setItem('cartItems', JSON.stringify(cartItems)); window.location.href = 'pasarela.html'; }
         function toggleSection(section) { document.getElementById(section).classList.toggle('active'); }
-    </script>
+        
+        window.addEventListener('DOMContentLoaded', updateCart);</script>
 </body>
 </html>
