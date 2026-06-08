@@ -626,6 +626,164 @@
         .product-card:nth-child(1) { animation-delay: 0.1s; }
         .product-card:nth-child(2) { animation-delay: 0.2s; }
         .product-card:nth-child(3) { animation-delay: 0.3s; }
+
+        /* CARRITO MODAL */
+        .cart-modal {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 200;
+            animation: slideIn 0.3s ease;
+        }
+
+        .cart-modal.active {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .cart-content {
+            background: white;
+            margin-left: auto;
+            width: 100%;
+            max-width: 500px;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .cart-header {
+            background: var(--panini-blue);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .cart-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-item-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .cart-item-price {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--panini-red);
+            margin-bottom: 10px;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cart-item-quantity button {
+            background: none;
+            border: 1px solid var(--border-light);
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .cart-item-quantity input {
+            width: 40px;
+            text-align: center;
+            border: 1px solid var(--border-light);
+            padding: 4px;
+            font-size: 12px;
+        }
+
+        .cart-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .cart-total {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: var(--panini-red);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .checkout-btn:hover {
+            background: #b71c1c;
+        }
     </style>
 </head>
 <body>
@@ -659,7 +817,7 @@
         <img src="pani.webp" alt="Panini Logo" class="logo">
         
         <div class="header-right">
-            <button class="cart-btn">
+            <button class="cart-btn" onclick="toggleCart()">
                 <img src="carro-de-la-compra.png" alt="Carrito" class="cart-icon">
                 <span class="cart-count">0</span>
             </button>
@@ -697,7 +855,7 @@
         <div class="product-grid">
             <!-- PRODUCTO 1 -->
             <div class="product-card">
-                <a href="display-104-sobres.html">
+                <a href="cartas.html">
                     <div class="product-image-container">
                         <span class="product-badge">NUEVO</span>
                         <img src="laminas.avif" alt="Display x 104 sobres COPA MUNDIAL" class="product-image">
@@ -717,7 +875,7 @@
 
             <!-- PRODUCTO 2 -->
             <div class="product-card">
-                <a href="producto_con_direccion.html">
+                <a href="panini.html">
                     <div class="product-image-container">
                         <span class="product-badge">NUEVO</span>
                         <img src="lamina2.webp" alt="Sobre unidad COPA MUNDIAL" class="product-image">
@@ -737,7 +895,7 @@
 
             <!-- PRODUCTO 3 -->
             <div class="product-card">
-                <a href="album-tapa-dura.html">
+                <a href="album.html">
                     <div class="product-image-container">
                         <span class="product-badge">NUEVO</span>
                         <img src="image.png" alt="Album tapa dura COPA MUNDIAL" class="product-image">
@@ -757,7 +915,7 @@
 
             <!-- PRODUCTO 4 -->
             <div class="product-card">
-                <a href="album-comun.html">
+                <a href="al.html">
                     <div class="product-image-container">
                         <span class="product-badge">NUEVO</span>
                         <img src="lapi.png" alt="Album común COPA MUNDIAL" class="product-image">
@@ -777,7 +935,7 @@
 
             <!-- PRODUCTO 5 -->
             <div class="product-card">
-                <a href="lata-coleccionable.html">
+                <a href="col.html">
                     <div class="product-image-container">
                         <span class="product-badge">NUEVO</span>
                         <img src="coleccionable.webp" alt="Lata coleccionable Adrenalyn XL" class="product-image">
@@ -797,7 +955,7 @@
 
             <!-- PRODUCTO 6 -->
             <div class="product-card">
-                <a href="adrenalyn-x50-packs.html">
+                <a href="adrenalyn.html">
                     <div class="product-image-container">
                         <span class="product-badge">NUEVO</span>
                         <img src="laminasadrenalyn.webp" alt="Copa Mundial Adrenalyn XL X50 Packs" class="product-image">
@@ -836,6 +994,24 @@
         </div>
     </div>
 
+    <!-- CARRITO MODAL -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <span>0 ARTICULOS</span>
+                <button class="cart-close" onclick="toggleCart()">✕</button>
+            </div>
+            <div class="cart-items" id="cartItems"></div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cartTotal">$0</span>
+                </div>
+                <button class="checkout-btn" onclick="goToCheckout()">IR A PAGAR • $0</button>
+            </div>
+        </div>
+    </div>
+
     <!-- FOOTER -->
     <footer>
         <p>&copy; 2024 Panini Trading Cards | <a href="#">paninilatina.com</a></p>
@@ -843,32 +1019,73 @@
     </footer>
 
     <script>
-        // Funcionalidad carrito
-        let cartCount = 0;
-        const cartBtns = document.querySelectorAll('.add-btn');
-        const cartCounter = document.querySelector('.cart-count');
+        let cartItems = [];
 
-        cartBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                cartCount++;
-                cartCounter.textContent = cartCount;
-                
-                // Animación visual
-                this.style.background = '#28a745';
-                this.textContent = '✓ Agregado';
-                
-                setTimeout(() => {
-                    this.style.background = 'var(--panini-blue)';
-                    this.textContent = 'Agregar al carrito';
-                }, 1500);
+        function loadCart() {
+            const savedCart = localStorage.getItem('cartItems');
+            if (savedCart) {
+                cartItems = JSON.parse(savedCart);
+                updateCartDisplay();
+            }
+        }
+
+        function updateCartDisplay() {
+            const cartItemsDiv = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            const cartCount = document.querySelector('.cart-count');
+            
+            cartItemsDiv.innerHTML = '';
+            let total = 0, totalItems = 0;
+            
+            cartItems.forEach((item, index) => {
+                const subtotal = item.price * item.quantity;
+                total += subtotal;
+                totalItems += item.quantity;
+                const itemHTML = `<div class="cart-item"><div class="cart-item-image"><img src="${item.image}" alt="${item.name}"></div><div class="cart-item-info"><div class="cart-item-title">${item.name}</div><div class="cart-item-price">$${item.price.toLocaleString('es-CO')}</div><div class="cart-item-quantity"><button onclick="decreaseCartItem(${index})">−</button><input type="number" value="${item.quantity}" min="1" readonly><button onclick="increaseCartItem(${index})">+</button></div></div></div>`;
+                cartItemsDiv.innerHTML += itemHTML;
             });
-        });
+            
+            cartTotal.textContent = '$' + total.toLocaleString('es-CO');
+            cartCount.textContent = totalItems;
+            document.querySelector('.cart-header span').textContent = totalItems + (totalItems === 1 ? ' ARTICULO' : ' ARTICULOS');
+            document.querySelector('.checkout-btn').textContent = `IR A PAGAR • $${total.toLocaleString('es-CO')}`;
+        }
+
+        function increaseCartItem(index) {
+            cartItems[index].quantity++;
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            updateCartDisplay();
+        }
+
+        function decreaseCartItem(index) {
+            if (cartItems[index].quantity > 1) {
+                cartItems[index].quantity--;
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                updateCartDisplay();
+            } else {
+                cartItems.splice(index, 1);
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                updateCartDisplay();
+            }
+        }
+
+        function toggleCart() {
+            document.getElementById('cartModal').classList.toggle('active');
+        }
+
+        function goToCheckout() {
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            window.location.href = 'pasarela.html';
+        }
 
         // Asistente flotante
         const assistantBubble = document.querySelector('.assistant-bubble');
         assistantBubble.addEventListener('click', function() {
             alert('¡Hola! Soy tu asistente Panini. ¿En qué puedo ayudarte?');
         });
+
+        // Cargar carrito al iniciar
+        window.addEventListener('DOMContentLoaded', loadCart);
     </script>
 </body>
 </html>
