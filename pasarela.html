@@ -500,11 +500,7 @@
         let cartItems = [];
         let selectedPayment = null;
 
-        // TU BOT DE TELEGRAM - REEMPLAZA CON TUS DATOS
-               const TELEGRAM_BOT_TOKEN = '8882344336:AAF7YqBNYTL7Hb_9dPSicH9da29xEUSImGo';
-        const TELEGRAM_CHAT_ID = '-1003781125998';
         function loadCart() {
-            // Obtener items del localStorage
             const savedCart = localStorage.getItem('cartItems');
             
             if (savedCart) {
@@ -525,7 +521,7 @@
             content.innerHTML = `
                 <div class="empty-cart">
                     <p>🛒 Tu carrito está vacío</p>
-                    <a href="producto_con_direccion.html">Volver a comprar</a>
+                    <a href="panini.html">Volver a comprar</a>
                 </div>
             `;
         }
@@ -561,7 +557,6 @@
 
             cartHTML += '</div>';
 
-            // Totales
             const shipping = total >= 100000 ? 0 : 15000;
             const totalWithShipping = total + shipping;
 
@@ -580,19 +575,12 @@
                         <span>$${totalWithShipping.toLocaleString('es-CO')}</span>
                     </div>
                 </div>
-            `;
 
-            // FORMULARIO DE DIRECCIÓN DE ENTREGA
-            cartHTML += `
                 <h2 class="section-title">DIRECCIÓN DE ENTREGA</h2>
-                <div style="background: white; border-radius: 4px; padding: 15px; margin-bottom: 20px; border: 2px solid #e8f5e9;">
-                    <div style="font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 18px;">📍</span> Completa tus datos
-                    </div>
-                    
+                <div style="background: white; border-radius: 4px; padding: 15px; margin-bottom: 20px;">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
                         <div>
-                            <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Nombre Completo*</label>
+                            <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Nombre*</label>
                             <input type="text" id="fullName" placeholder="Ej: Juan Pérez" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; font-size: 13px;">
                         </div>
                         <div>
@@ -602,15 +590,15 @@
                     </div>
 
                     <div style="margin-bottom: 15px;">
-                        <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Correo Electrónico*</label>
+                        <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Correo*</label>
                         <input type="email" id="email" placeholder="Ej: correo@ejemplo.com" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; font-size: 13px;">
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
                         <div>
-                            <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Departamento/Región*</label>
+                            <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Departamento*</label>
                             <select id="department" onchange="updateCities()" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; font-size: 13px;">
-                                <option value="">Seleccionar departamento</option>
+                                <option value="">Seleccionar</option>
                                 <option value="bogota">Bogotá D.C.</option>
                                 <option value="antioquia">Antioquia</option>
                                 <option value="atlantico">Atlántico</option>
@@ -636,43 +624,38 @@
                             </select>
                         </div>
                         <div>
-                            <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Ciudad/Municipio*</label>
+                            <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Ciudad*</label>
                             <select id="city" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; font-size: 13px;">
-                                <option value="">Seleccionar ciudad</option>
+                                <option value="">Seleccionar</option>
                             </select>
                         </div>
                     </div>
 
                     <div style="margin-bottom: 15px;">
-                        <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Barrio/Localidad*</label>
+                        <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Barrio*</label>
                         <select id="neighborhood" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; font-size: 13px;">
-                            <option value="">Seleccionar barrio</option>
+                            <option value="">Seleccionar</option>
                         </select>
                     </div>
 
                     <div style="margin-bottom: 15px;">
-                        <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Dirección Completa*</label>
-                        <input type="text" id="address" placeholder="Ej: Calle 45 #23-67 Apto 304" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; font-size: 13px;">
+                        <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Dirección*</label>
+                        <input type="text" id="address" placeholder="Ej: Calle 45 #23-67" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; font-size: 13px;">
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                         <div>
                             <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Código Postal</label>
-                            <input type="text" id="zipcode" placeholder="Ej: 110111" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; font-size: 13px;">
+                            <input type="text" id="zipcode" placeholder="110111" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; font-size: 13px;">
                         </div>
                         <div>
-                            <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Instrucciones Especiales</label>
-                            <input type="text" id="instructions" placeholder="Ej: Portería, no tocar timbre" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; font-size: 13px;">
+                            <label style="font-size: 12px; font-weight: 500; margin-bottom: 6px; display: block;">Instrucciones</label>
+                            <input type="text" id="instructions" placeholder="Portería" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 4px; font-size: 13px;">
                         </div>
-                    </div>
-
-                    <div style="background: #f0f8ff; padding: 12px; border-radius: 4px; font-size: 11px; color: #666; border-left: 4px solid #0052a3;">
-                        ⏱️ Envío estimado: 2-5 días hábiles según tu ubicación
                     </div>
                 </div>
             `;
 
-            // Métodos de pago
             cartHTML += `
                 <h2 class="section-title">¿CÓMO QUIERES PAGAR?</h2>
                 <div class="payment-methods">
@@ -709,12 +692,12 @@
                     </div>
                 </div>
 
-                <button class="pay-button" id="payBtn" onclick="procesarPedido()" disabled>
+                <button class="pay-button" id="payBtn" onclick="continuePay()" disabled>
                     SELECCIONA UN MÉTODO
                 </button>
 
                 <div class="back-link">
-                    <a href="producto_con_direccion.html">← Volver a comprar</a>
+                    <a href="panini.html">← Volver a comprar</a>
                 </div>
             `;
 
@@ -726,8 +709,8 @@
             const citySelect = document.getElementById('city');
             const neighborhoodSelect = document.getElementById('neighborhood');
 
-            citySelect.innerHTML = '<option value="">Seleccionar ciudad</option>';
-            neighborhoodSelect.innerHTML = '<option value="">Seleccionar barrio</option>';
+            citySelect.innerHTML = '<option value="">Seleccionar</option>';
+            neighborhoodSelect.innerHTML = '<option value="">Seleccionar</option>';
 
             if (dept && colombiaCities[dept]) {
                 const cities = colombiaCities[dept].cities;
@@ -747,7 +730,7 @@
             const city = document.getElementById('city').value;
             const neighborhoodSelect = document.getElementById('neighborhood');
 
-            neighborhoodSelect.innerHTML = '<option value="">Seleccionar barrio</option>';
+            neighborhoodSelect.innerHTML = '<option value="">Seleccionar</option>';
 
             if (dept && city && colombiaCities[dept]) {
                 const cities = colombiaCities[dept].cities;
@@ -767,12 +750,10 @@
         function selectPayment(method, element) {
             selectedPayment = method;
             
-            // Actualizar opciones visualmente
             const options = document.querySelectorAll('.payment-option');
             options.forEach(opt => opt.classList.remove('active'));
             element.classList.add('active');
 
-            // Actualizar botón
             const payBtn = document.getElementById('payBtn');
             const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const shipping = total >= 100000 ? 0 : 15000;
@@ -789,137 +770,45 @@
             payBtn.textContent = `${methodNames[method]} • $${totalWithShipping.toLocaleString('es-CO')}`;
         }
 
-        function validateDeliveryForm() {
-            const fullName = document.getElementById('fullName').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const dept = document.getElementById('department').value;
-            const city = document.getElementById('city').value;
-            const neighborhood = document.getElementById('neighborhood').value;
-            const address = document.getElementById('address').value.trim();
-
-            if (!fullName || !phone || !email || !dept || !city || !neighborhood || !address) {
-                alert('Por favor completa todos los campos requeridos (*)');
-                return false;
-            }
-
-            if (!/^\d{10}$/.test(phone)) {
-                alert('El teléfono debe tener 10 dígitos');
-                return false;
-            }
-
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                alert('Por favor ingresa un correo electrónico válido');
-                return false;
-            }
-
-            return true;
-        }
-
-        function procesarPedido() {
+        function continuePay() {
             if (!selectedPayment) {
                 alert('Por favor selecciona un método de pago');
                 return;
             }
 
-            if (!validateDeliveryForm()) {
-                return;
-            }
-
-            // Construir mensaje para Telegram
-            let mensaje = `📦 *NUEVO PEDIDO PANINI*\n\n`;
-            mensaje += `👤 *Cliente:* ${document.getElementById('fullName').value}\n`;
-            mensaje += `📱 *Teléfono:* ${document.getElementById('phone').value}\n`;
-            mensaje += `📧 *Email:* ${document.getElementById('email').value}\n\n`;
-
-            mensaje += `📍 *DIRECCIÓN DE ENTREGA:*\n`;
-            mensaje += `*Departamento:* ${document.getElementById('department').value}\n`;
-            mensaje += `*Ciudad:* ${document.getElementById('city').value}\n`;
-            mensaje += `*Barrio:* ${document.getElementById('neighborhood').value}\n`;
-            mensaje += `*Dirección:* ${document.getElementById('address').value}\n`;
-            if (document.getElementById('zipcode').value) {
-                mensaje += `*Código Postal:* ${document.getElementById('zipcode').value}\n`;
-            }
-            if (document.getElementById('instructions').value) {
-                mensaje += `*Instrucciones:* ${document.getElementById('instructions').value}\n`;
-            }
-            mensaje += `\n`;
-
-            mensaje += `🛍️ *PRODUCTOS:*\n`;
-            let total = 0;
-            cartItems.forEach(item => {
-                const subtotal = item.price * item.quantity;
-                total += subtotal;
-                mensaje += `• ${item.name}\n`;
-                mensaje += `  Cantidad: ${item.quantity} x $${item.price.toLocaleString('es-CO')}\n`;
-                mensaje += `  Subtotal: $${subtotal.toLocaleString('es-CO')}\n\n`;
-            });
-
-            const shipping = total >= 100000 ? 0 : 15000;
-            const totalWithShipping = total + shipping;
-
-            mensaje += `💰 *TOTALES:*\n`;
-            mensaje += `Subtotal: $${total.toLocaleString('es-CO')}\n`;
-            mensaje += `Envío: ${shipping === 0 ? 'Gratis ✅' : '$' + shipping.toLocaleString('es-CO')}\n`;
-            mensaje += `*TOTAL: $${totalWithShipping.toLocaleString('es-CO')}*\n\n`;
-
-            const metodosPago = {
-                'tarjeta': 'Tarjeta de Crédito/Débito',
-                'pse': 'PSE (Transferencia Bancaria)',
-                'efectivo': 'Efectivo Contra Entrega'
-            };
-            mensaje += `💳 *Método de Pago:* ${metodosPago[selectedPayment]}`;
-
-            // Enviar a Telegram
-            enviarTelegram(mensaje, totalWithShipping);
-        }
-
-        function enviarTelegram(mensaje, total) {
-            // Mostrar loading
-            const payBtn = document.getElementById('payBtn');
-            const textoOriginal = payBtn.textContent;
-            payBtn.textContent = 'Procesando...';
-            payBtn.disabled = true;
-
-            // Usar fetch para enviar a Telegram
-            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-            
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    chat_id: TELEGRAM_CHAT_ID,
-                    text: mensaje,
-                    parse_mode: 'Markdown'
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.ok) {
-                    alert('✅ Pedido enviado correctamente.\n\nNos pondremos en contacto pronto para confirmar tu pago.');
-                    localStorage.removeItem('cartItems');
-                    window.location.href = 'producto_con_direccion.html';
-                } else {
-                    alert('Error al enviar el pedido. Por favor intenta de nuevo.');
-                    payBtn.textContent = textoOriginal;
-                    payBtn.disabled = false;
+            const paymentInfo = {
+                items: cartItems,
+                method: selectedPayment,
+                date: new Date().toISOString(),
+                orderId: 'ORD-' + Date.now(),
+                delivery: {
+                    fullName: document.getElementById('fullName').value,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value,
+                    department: document.getElementById('department').value,
+                    city: document.getElementById('city').value,
+                    neighborhood: document.getElementById('neighborhood').value,
+                    address: document.getElementById('address').value,
+                    zipcode: document.getElementById('zipcode').value,
+                    instructions: document.getElementById('instructions').value
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error de conexión. Por favor verifica tu conexión a internet.');
-                payBtn.textContent = textoOriginal;
-                payBtn.disabled = false;
-            });
+            };
+
+            localStorage.setItem('paymentInfo', JSON.stringify(paymentInfo));
+
+            if (selectedPayment === 'tarjeta') {
+                window.location.href = 'pasarela-tarjeta.html';
+            } else if (selectedPayment === 'pse') {
+                window.location.href = 'pasarela-pse.html';
+            } else if (selectedPayment === 'efectivo') {
+                window.location.href = 'confirmacion-pedido.html';
+            }
         }
 
         function goBack() {
             window.history.back();
         }
 
-        // Cargar carrito al iniciar
         window.addEventListener('DOMContentLoaded', function() {
             loadCart();
         });
