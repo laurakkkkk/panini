@@ -121,25 +121,7 @@
         </div>
     </div>
 
-    <div class="delivery-section">
-        <div class="delivery-title"><span class="delivery-icon">📍</span> DIRECCIÓN DE ENTREGA</div>
-        <div class="form-row">
-            <div class="form-group"><label class="form-label">Nombre Completo*</label><input type="text" class="form-input" id="fullName" placeholder="Ej: Juan Pérez"></div>
-            <div class="form-group"><label class="form-label">Teléfono*</label><input type="tel" class="form-input" id="phone" placeholder="Ej: 3001234567"></div>
-        </div>
-        <div class="form-group"><label class="form-label">Correo Electrónico*</label><input type="email" class="form-input" id="email" placeholder="Ej: correo@ejemplo.com"></div>
-        <div class="form-row">
-            <div class="form-group"><label class="form-label">Departamento/Región*</label><select class="form-select" id="department" onchange="updateCities()"><option value="">Seleccionar departamento</option><option value="bogota">Bogotá D.C.</option><option value="antioquia">Antioquia</option><option value="atlantico">Atlántico</option><option value="bolivar">Bolívar</option><option value="boyaca">Boyacá</option><option value="caldas">Caldas</option><option value="caqueta">Caquetá</option><option value="cauca">Cauca</option><option value="cesar">Cesar</option><option value="choco">Chocó</option><option value="cordoba">Córdoba</option><option value="cundinamarca">Cundinamarca</option><option value="huila">Huila</option><option value="la_guajira">La Guajira</option><option value="magdalena">Magdalena</option><option value="meta">Meta</option><option value="nariño">Nariño</option><option value="norte_santander">Norte de Santander</option><option value="risaralda">Risaralda</option><option value="santander">Santander</option><option value="tolima">Tolima</option><option value="valle">Valle del Cauca</option></select></div>
-            <div class="form-group"><label class="form-label">Ciudad/Municipio*</label><select class="form-select" id="city"><option value="">Seleccionar ciudad</option></select></div>
-        </div>
-        <div class="form-group"><label class="form-label">Barrio/Localidad*</label><select class="form-select" id="neighborhood"><option value="">Seleccionar barrio</option></select></div>
-        <div class="form-row"><div class="form-group"><label class="form-label">Dirección Completa*</label><input type="text" class="form-input" id="address" placeholder="Ej: Calle 45 #23-67 Apto 304"></div></div>
-        <div class="form-row">
-            <div class="form-group"><label class="form-label">Código Postal</label><input type="text" class="form-input" id="zipcode" placeholder="Ej: 110111"></div>
-            <div class="form-group"><label class="form-label">Instrucciones Especiales</label><input type="text" class="form-input" id="instructions" placeholder="Ej: Portería, no tocar timbre"></div>
-        </div>
-        <div class="delivery-info">⏱️ Envío estimado: 2-5 días hábiles según tu ubicación</div>
-    </div>
+
 
     <div class="description-section">
         <div class="section-title" onclick="toggleSection('descripcion')">Descripción <span>+</span></div>
@@ -181,66 +163,15 @@
     </footer>
 
     <script>
-        const colombiaCities = {bogota: {cities: [{name: "Bogotá", neighborhoods: ["Usaquén", "Chapinero", "Santa Fe", "San Cristóbal", "Usme", "Tunjuelito", "Bosa", "Kennedy", "Fontibón", "Engativá", "Suba", "Barrios Unidos", "Teusaquillo", "Mártires", "Antonio Nariño", "Puente Aranda", "La Candelaria", "Rafael Uribe Umaña", "Ciudad Bolívar"]}]}, antioquia: {cities: [{name: "Medellín", neighborhoods: ["Arví", "Castilla", "Doce de Octubre", "Guayabal", "La Candelaria", "La América", "Laureles-Estadio", "Manrique", "Palmitas", "Popayán", "Robledo", "San Alejo", "San Cristóbal", "San Javier", "Santa Cruz", "Belén"]}, {name: "Bello", neighborhoods: ["Centro", "Altos de San Miguel", "El Rosario", "Guanacas", "La Pajarita", "Portachuelo", "San Miguel", "Villa del Socorro"]}]}, atlantico: {cities: [{name: "Barranquilla", neighborhoods: ["Centro", "Abajo", "Arriba", "El Prado", "La Luz", "Los Mártires", "Olaya", "Suroriente", "San Alejo"]}]}, bolivar: {cities: [{name: "Cartagena", neighborhoods: ["Centro", "Bocagrande", "Castillogrande", "Laguito", "El Cabrero", "Turística", "San Diego", "Getsemaní"]}]}, boyaca: {cities: [{name: "Tunja", neighborhoods: ["Centro", "Limarco", "Jordán", "La Fuente", "Las Acacias", "Porvenir"]}]}, caldas: {cities: [{name: "Manizales", neighborhoods: ["Centro", "Arrecife", "Barrio Nuevo", "Cervantes", "Colina", "El Prado", "Guanacas", "La Hormiga"]}]}, caqueta: {cities: [{name: "Florencia", neighborhoods: ["Centro", "Barrio Nuevo", "La Arenosa", "San Antonio"]}]}, cauca: {cities: [{name: "Popayán", neighborhoods: ["Centro", "Barrio Obrero", "Caleida", "Loma de la Cruz", "San Agustín"]}]}, cesar: {cities: [{name: "Valledupar", neighborhoods: ["Centro", "Altos del Rosario", "Bucaramanga", "La Maná", "Los Andes"]}]}, choco: {cities: [{name: "Quibdó", neighborhoods: ["Centro", "Barrio Nuevo", "La Loma", "San Isidro"]}]}, cordoba: {cities: [{name: "Montería", neighborhoods: ["Centro", "Barrio Nuevo", "Las Gaviotas", "Los Laureles"]}]}, cundinamarca: {cities: [{name: "Soacha", neighborhoods: ["Centro", "Altos de Cazucá", "Bavaria", "Compartir", "el Progreso"]}]}, huila: {cities: [{name: "Neiva", neighborhoods: ["Centro", "Altos de la Magdalena", "Los Mangos", "San Fernando"]}]}, la_guajira: {cities: [{name: "Riohacha", neighborhoods: ["Centro", "Barrio Nuevo", "La Arenosa", "San Antonio"]}]}, magdalena: {cities: [{name: "Santa Marta", neighborhoods: ["Centro", "Bastidas", "El Rodadero", "Gaira", "Taganga"]}]}, meta: {cities: [{name: "Villavicencio", neighborhoods: ["Centro", "Barrio Nuevo", "Los Laureles", "San Isidro"]}]}, nariño: {cities: [{name: "Pasto", neighborhoods: ["Centro", "Barrio Obrero", "las Acacias", "San Juan"]}]}, norte_santander: {cities: [{name: "Cúcuta", neighborhoods: ["Centro", "Barrio Obrero", "El Rosario", "La Esperanza"]}]}, risaralda: {cities: [{name: "Pereira", neighborhoods: ["Centro", "Alamos", "Bavaria", "Cuba", "Laureles"]}]}, santander: {cities: [{name: "Bucaramanga", neighborhoods: ["Centro", "Cabecera", "Centro Comercial", "Fortul", "Gil Hermida", "Miraflores"]}]}, tolima: {cities: [{name: "Ibagué", neighborhoods: ["Centro", "Barrio Obrero", "Combeima", "La Estancia"]}]}, valle: {cities: [{name: "Cali", neighborhoods: ["Aguablanca", "Alpujarra", "Calvario", "Castilla", "Centro", "Colombiana", "Cubagua", "El Guarda", "El Lili", "Juanchito", "Jorjorillo", "Kennedy", "Menga", "Pance", "Puerto Rellena", "San Alejo", "San Antón"]}]}};
-
         let cartItems = [];
         const productPrice = 15000;
-
-        function updateCities() {
-            const dept = document.getElementById('department').value, citySelect = document.getElementById('city'), neighborhoodSelect = document.getElementById('neighborhood');
-            citySelect.innerHTML = '<option value="">Seleccionar ciudad</option>';
-            neighborhoodSelect.innerHTML = '<option value="">Seleccionar barrio</option>';
-            if (dept && colombiaCities[dept]) {
-                colombiaCities[dept].cities.forEach(city => {
-                    const opt = document.createElement('option');
-                    opt.value = city.name;
-                    opt.textContent = city.name;
-                    citySelect.appendChild(opt);
-                });
-                citySelect.addEventListener('change', updateNeighborhoods);
-            }
-        }
-
-        function updateNeighborhoods() {
-            const dept = document.getElementById('department').value, city = document.getElementById('city').value, neighborhoodSelect = document.getElementById('neighborhood');
-            neighborhoodSelect.innerHTML = '<option value="">Seleccionar barrio</option>';
-            if (dept && city && colombiaCities[dept]) {
-                const selectedCity = colombiaCities[dept].cities.find(c => c.name === city);
-                if (selectedCity) {
-                    selectedCity.neighborhoods.forEach(neighborhood => {
-                        const opt = document.createElement('option');
-                        opt.value = neighborhood;
-                        opt.textContent = neighborhood;
-                        neighborhoodSelect.appendChild(opt);
-                    });
-                }
-            }
-        }
 
         function increaseQuantity() { const input = document.getElementById('quantity'); input.value = parseInt(input.value) + 1; }
         function decreaseQuantity() { const input = document.getElementById('quantity'); if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1; }
 
-        function validateDeliveryForm() {
-            const fullName = document.getElementById('fullName').value.trim(), phone = document.getElementById('phone').value.trim(), email = document.getElementById('email').value.trim(), dept = document.getElementById('department').value, city = document.getElementById('city').value, neighborhood = document.getElementById('neighborhood').value, addr = document.getElementById('address').value.trim();
-            if (!fullName || !phone || !email || !dept || !city || !neighborhood || !addr) {
-                alert('Por favor completa todos los campos requeridos');
-                return false;
-            }
-            if (!/^\d{10}$/.test(phone)) {
-                alert('El teléfono debe tener 10 dígitos');
-                return false;
-            }
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                alert('Por favor ingresa un correo válido');
-                return false;
-            }
-            return true;
-        }
-
         function addToCart() {
-            if (!validateDeliveryForm()) return;
-            const qty = parseInt(document.getElementById('quantity').value), delivery = {fullName: document.getElementById('fullName').value, phone: document.getElementById('phone').value, email: document.getElementById('email').value, department: document.getElementById('department').value, city: document.getElementById('city').value, neighborhood: document.getElementById('neighborhood').value, address: document.getElementById('address').value, zipcode: document.getElementById('zipcode').value, instructions: document.getElementById('instructions').value};
-            cartItems = [{name: 'Album común COPA MUNDIAL DE LA FIFA 2026™', price: productPrice, quantity: qty, image: 'lapi.png', delivery: delivery}];
+            const qty = parseInt(document.getElementById('quantity').value);
+            cartItems = [{name: 'Album común COPA MUNDIAL DE LA FIFA 2026™', price: productPrice, quantity: qty, image: 'lapi.png'}];
             localStorage.setItem('cartItems', JSON.stringify(cartItems));
             updateCart();
             toggleCart();
@@ -254,7 +185,7 @@
                 const subtotal = item.price * item.quantity;
                 total += subtotal;
                 totalItems += item.quantity;
-                const itemHTML = `<div class="cart-item"><div class="cart-item-image"><img src="${item.image}" alt="${item.name}"></div><div class="cart-item-info"><div class="cart-item-title">${item.name}</div><div class="cart-item-price">$${item.price.toLocaleString('es-CO')}</div><div style="font-size: 10px; color: #666; margin: 8px 0;"><strong>Entrega a:</strong> ${item.delivery ? item.delivery.city + ', ' + item.delivery.neighborhood : 'No especificada'}</div><div class="cart-item-quantity"><button onclick="decreaseCartItem(${index})">−</button><input type="number" value="${item.quantity}" min="1" readonly><button onclick="increaseCartItem(${index})">+</button></div></div></div>`;
+                const itemHTML = `<div class="cart-item"><div class="cart-item-image"><img src="${item.image}" alt="${item.name}"></div><div class="cart-item-info"><div class="cart-item-title">${item.name}</div><div class="cart-item-price">$${item.price.toLocaleString('es-CO')}</div><div class="cart-item-quantity"><button onclick="decreaseCartItem(${index})">−</button><input type="number" value="${item.quantity}" min="1" readonly><button onclick="increaseCartItem(${index})">+</button></div></div></div>`;
                 cartItemsDiv.innerHTML += itemHTML;
             });
             cartTotal.textContent = '$' + total.toLocaleString('es-CO');
